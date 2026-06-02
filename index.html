@@ -432,6 +432,24 @@ main {
   line-height: 1.6;
 }
 
+/* ── Download button ── */
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  margin: 20px 0 8px;
+  transition: background 0.15s;
+}
+.download-btn:hover { background: #0041cc; }
+.download-note { font-size: 12px; color: var(--sub); margin-bottom: 20px; }
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .posts-grid { grid-template-columns: repeat(2, 1fr); }
@@ -520,6 +538,16 @@ const BLOG_DATA = {
       "project": "TC검토_플러그인",
       "summary": "TC(테스트케이스) 표기 규칙 준수 여부를 AI가 자동으로 검토해주는 피그마 플러그인입니다. OpenAI API를 연동하여 수백 건의 TC를 빠르게 검수할 수 있습니다.",
       "content": "<h2>프로젝트 개요</h2><p>TC 검토 플러그인은 QA 단계에서 작성된 TC(테스트케이스)가 프로젝트에서 정한 표기 규칙을 준수하고 있는지 자동으로 검토해주는 도구입니다. 신한투자증권 차세대 프로젝트에서 사용하는 TC 표기 규칙은 항목별로 세부 기준이 다르며, 수백 건에 달하는 TC를 담당자가 하나씩 수작업으로 검토하는 것은 시간과 오류 면에서 비효율적이었습니다.</p><p>이 플러그인은 OpenAI API를 연동하여 TC 내용을 분석하고, 규칙 위반 항목과 수정 방향을 자동으로 제시합니다. 피그마 플러그인 형태로 제공되어 QA 작업 흐름 안에서 바로 사용할 수 있습니다.</p><h2>주요 기능</h2><ul><li>TC 텍스트 일괄 입력 후 규칙 위반 항목 자동 탐지</li><li>위반 항목별 규칙 명칭 및 수정 방향 안내</li><li>검토 결과 복사 및 외부 문서로 내보내기</li><li>피그마 플러그인 연계 — 피그마 작업 화면에서 직접 실행 가능</li><li>검토 이력 확인 — 최근 검토 결과 재열람 가능</li></ul><h2>사용 방법</h2><p><strong>피그마에서 플러그인 실행</strong><br>피그마 상단 메뉴에서 플러그인 → TC 검토 플러그인을 선택해 실행합니다. 처음 실행 시 OpenAI API 키 입력이 필요합니다. API 키는 OpenAI 플랫폼에서 발급받을 수 있으며, 한 번 입력하면 로컬에 저장되어 재입력하지 않아도 됩니다.</p><p><strong>TC 입력</strong><br>플러그인 화면의 입력창에 검토할 TC 내용을 붙여넣습니다. 한 번에 여러 TC를 입력할 수 있으며, 줄바꿈으로 구분합니다.</p><p><strong>검토 실행</strong><br>검토 시작 버튼을 누르면 AI가 입력된 TC를 분석합니다. 처리 시간은 TC 수에 따라 다르며, 통상 10~30초 내외입니다.</p><p><strong>결과 확인 및 수정</strong><br>검토 결과 화면에서 위반 항목 목록을 확인합니다. 각 항목에는 위반한 규칙 이름과 권장 수정 방향이 함께 표시됩니다. 결과는 복사 버튼으로 클립보드에 저장하거나, 내보내기 버튼으로 텍스트 파일로 저장할 수 있습니다.</p><h2>사용 시 유의사항</h2><ul><li>OpenAI API 사용 비용이 발생합니다. 과금 기준은 입력 텍스트 분량에 따라 다릅니다.</li><li>AI 검토 결과는 참고용이며, 최종 판단은 담당자가 직접 확인해야 합니다.</li><li>TC 수가 많을수록 처리 시간이 길어질 수 있습니다.</li></ul><div class='callout'>반복적이고 정답이 있는 검토 작업은 자동화에 적합합니다. 담당자는 AI가 잡아낸 항목을 확인하고 최종 판단하는 역할에 집중할 수 있습니다.</div>"
+    },
+    {
+      "id": "2026-06-02_uxwriting-download",
+      "title": "UX라이팅 플러그인 v1.8 — 다운로드 및 설치 안내",
+      "date": "2026-06-02",
+      "category": "프로젝트소개",
+      "tags": ["UX라이팅플러그인", "다운로드", "설치", "피그마"],
+      "project": "UX라이팅_플러그인",
+      "summary": "신한투자증권 UX라이팅 플러그인 v1.8을 피그마에 설치하는 방법입니다. ZIP 파일을 다운로드한 뒤 피그마에서 불러오면 바로 사용할 수 있습니다.",
+      "content": "<h2>다운로드</h2><p>아래 버튼을 클릭하면 플러그인 파일이 ZIP 형태로 다운로드됩니다.</p><a href='https://github.com/euuezone/shinhan-uxwriting-plugin/releases/download/v1.8/shinhan-uxwriting-plugin-v1.8.zip' class='download-btn' download>⬇ 플러그인 다운로드 (v1.8)</a><p class='download-note'>파일 크기 약 301KB · GitHub Releases 제공</p><h2>설치 방법</h2><p>다운로드한 ZIP 파일을 압축 해제하면 <code>02_플러그인</code> 폴더가 나옵니다. 그 안에 있는 <code>manifest.json</code> 파일을 피그마에서 불러오면 설치가 완료됩니다.</p><p><strong>1단계 — 피그마 메뉴 열기</strong><br>피그마 상단 왼쪽 메뉴 아이콘을 클릭합니다.</p><p><strong>2단계 — 플러그인 개발 메뉴로 이동</strong><br>Plugins → Development → Import plugin from manifest 를 선택합니다.</p><p><strong>3단계 — manifest.json 선택</strong><br>압축 해제한 폴더에서 <code>02_플러그인 → manifest.json</code> 파일을 선택합니다.</p><p><strong>4단계 — 실행</strong><br>Plugins → Development 목록에 <code>신한투자증권 UX라이팅 검토</code>가 추가된 것을 확인합니다. 이후 피그마 작업 중 언제든지 실행할 수 있습니다.</p><h2>사용 전 확인 사항</h2><ul><li>피그마 데스크탑 앱에서만 로컬 플러그인 설치가 가능합니다. 웹 브라우저 버전에서는 작동하지 않습니다.</li><li>플러그인을 처음 실행하면 OpenAI API 키 입력창이 나타납니다. API 키는 OpenAI 플랫폼에서 발급받을 수 있으며, 한 번 입력하면 이후에는 자동으로 불러옵니다.</li><li>설치 후 문제가 생기면 <code>manifest.json</code>이 올바른 폴더 안에 있는지 다시 확인해 주세요.</li></ul><div class='callout'>설치가 어렵거나 실행이 안 되는 경우 01_사용가이드 문서를 먼저 확인해 주세요.</div>"
     },
     {
       "id": "intro_uxwriting-plugin",
