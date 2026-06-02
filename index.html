@@ -182,7 +182,7 @@ main {
   color: var(--sub);
   line-height: 1.55;
 }
-.project-card-download {
+.project-card-guide {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -193,9 +193,11 @@ main {
   background: var(--accent-bg);
   padding: 4px 10px;
   border-radius: 100px;
-  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 }
-.project-card-download:hover { background: #d6e4ff; }
+.project-card-guide:hover { background: #d6e4ff; }
 .pill-dot { width: 5px; height: 5px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
 
 /* ── Blog section ── */
@@ -755,7 +757,10 @@ const BLOG_DATA = {
 const PROJECTS = [
   { name: '신한 대시보드', version: 'v14', url: 'https://euuezone.github.io/shinhan-dashboard/', desc: '신한투자증권 차세대 프로젝트 작업 현황을 한눈에 볼 수 있는 웹 대시보드' },
   { name: 'TC 검토 플러그인', version: 'v2.2', url: 'https://euuezone.github.io/tc-review-plugin/', desc: 'TC 표기 규칙을 AI가 자동 검토해주는 피그마 플러그인. OpenAI API 연동' },
-  { name: 'UX라이팅 플러그인', version: 'v1.8', url: 'https://euuezone.github.io/shinhan-uxwriting-plugin/', desc: '피그마 작업 중 UX라이팅 가이드 준수 여부를 실시간으로 확인하는 플러그인', download: 'https://github.com/euuezone/shinhan-uxwriting-plugin/releases/download/v1.8/shinhan-uxwriting-plugin-v1.8.zip' },
+  { name: 'UX라이팅 플러그인', version: 'v1.8', url: 'https://euuezone.github.io/shinhan-uxwriting-plugin/', desc: '피그마 작업 중 UX라이팅 가이드 준수 여부를 실시간으로 확인하는 플러그인', guide: {
+    download: 'https://github.com/euuezone/shinhan-uxwriting-plugin/releases/download/v1.8/shinhan-uxwriting-plugin-v1.8.zip',
+    content: `<h2>UX라이팅 플러그인이란?</h2><p>피그마에서 화면을 작업할 때 버튼 텍스트, 안내 문구, 오류 메시지 등이 신한투자증권 UX라이팅 가이드에 맞는지 실시간으로 확인해주는 플러그인입니다. 별도 문서를 열지 않고도 피그마 안에서 바로 검사하고 가이드를 조회할 수 있습니다.</p><h2>다운로드</h2><p>아래 버튼을 클릭하면 플러그인 파일이 다운로드됩니다.</p><a href='https://github.com/euuezone/shinhan-uxwriting-plugin/releases/download/v1.8/shinhan-uxwriting-plugin-v1.8.zip' class='download-btn' download>⬇ 플러그인 다운로드 (v1.8)</a><p class='download-note'>파일 크기 약 301KB</p><h2>설치 방법</h2><p><strong>1. 압축 해제</strong><br>다운로드한 ZIP 파일을 압축 해제합니다. <code>02_플러그인</code> 폴더가 나옵니다.</p><p><strong>2. 피그마 메뉴 열기</strong><br>피그마 데스크탑 앱 상단 왼쪽 메뉴 아이콘을 클릭합니다.</p><p><strong>3. 플러그인 불러오기</strong><br>Plugins → Development → Import plugin from manifest 를 선택합니다.</p><p><strong>4. manifest.json 선택</strong><br><code>02_플러그인</code> 폴더 안의 <code>manifest.json</code> 파일을 선택하면 설치 완료입니다.</p><h2>사용 방법</h2><p><strong>텍스트 검사</strong><br>검사할 텍스트 레이어를 피그마에서 선택한 뒤, 플러그인을 실행하고 검사 버튼을 누릅니다. 가이드 위반 항목과 수정 방향이 표시됩니다.</p><p><strong>가이드 검색</strong><br>플러그인 검색창에 키워드를 입력하면 관련 가이드 항목을 바로 찾을 수 있습니다.</p><p><strong>현황 대시보드</strong><br>전체 화면의 UX라이팅 위반 현황은 <a href='https://euuezone.github.io/shinhan-uxwriting-plugin/' target='_blank' style='color:var(--accent)'>대시보드</a>에서 확인할 수 있습니다.</p><h2>참고 사항</h2><ul><li>피그마 <strong>데스크탑 앱</strong>에서만 로컬 플러그인 설치가 가능합니다.</li><li>처음 실행 시 OpenAI API 키 입력이 필요합니다. 한 번 입력하면 이후 자동 저장됩니다.</li></ul>`
+  }},
   { name: 'QA AI 도우미', version: 'v1', url: 'https://euuezone.github.io/qa-ai-figma-plugin/', desc: '화면 컴포넌트를 선택하면 TC를 자동으로 작성해주는 AI 기반 피그마 플러그인' },
   { name: '문서 마스터 템플릿', version: 'v14', url: 'https://euuezone.github.io/document-master-template/', desc: 'AI Native SDLC 도입 제안을 위해 만든 기획 문서 HTML 템플릿' },
   { name: 'Korean Design MD', version: 'v1', url: 'https://euuezone.github.io/korean-design-md/', desc: '국내 73개 서비스의 디자인 패턴과 인터랙션 레퍼런스를 정리한 문서' },
@@ -774,7 +779,7 @@ function init() {
 }
 
 function renderProjects() {
-  document.getElementById('projectsList').innerHTML = PROJECTS.map(p =>
+  document.getElementById('projectsList').innerHTML = PROJECTS.map((p, i) =>
     `<div class="project-card">
       <a href="${p.url}" target="_blank" style="text-decoration:none;color:inherit;">
         <div class="project-card-head">
@@ -784,9 +789,23 @@ function renderProjects() {
         </div>
         <div class="project-card-desc">${p.desc}</div>
       </a>
-      ${p.download ? `<a href="${p.download}" class="project-card-download" download>⬇ 다운로드</a>` : ''}
+      ${p.guide ? `<button class="project-card-guide" onclick="openGuide(${i})">📖 사용법 · 다운로드</button>` : ''}
     </div>`
   ).join('');
+}
+
+function openGuide(idx) {
+  const p = PROJECTS[idx];
+  document.getElementById('modalInner').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+      <span class="pill-dot" style="width:8px;height:8px;"></span>
+      <span style="font-size:13px;font-weight:700;color:var(--accent);letter-spacing:0.05em;text-transform:uppercase;">${p.name}</span>
+      <span style="font-size:12px;color:var(--sub);">${p.version}</span>
+    </div>
+    <div class="modal-body">${p.guide.content}</div>
+  `;
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function renderFilters() {
