@@ -448,6 +448,68 @@ main {
   line-height: 1.6;
 }
 
+/* ── Share button (modal) ── */
+.modal-share {
+  position: absolute;
+  top: 20px;
+  right: 64px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--hover-bg);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--sub);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.modal-share:hover { background: var(--border); color: var(--text); }
+
+/* ── Share button (card hover) ── */
+.post-card { position: relative; }
+.card-share {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--sub);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+  z-index: 2;
+}
+.post-card:hover .card-share { opacity: 1; }
+.card-share:hover { background: var(--accent); color: #fff; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: #0a0a0a;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+  z-index: 9999;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
 /* ── Download button ── */
 .download-btn {
   display: inline-flex;
@@ -480,6 +542,8 @@ main {
 </style>
 </head>
 <body>
+
+<div class="toast" id="toast"></div>
 
 <header>
   <div class="header-inner">
@@ -890,6 +954,12 @@ function renderPosts() {
     const idx = BLOG_DATA.posts.indexOf(post);
     return `
     <div class="post-card" onclick="openModal(${idx})">
+      <button class="card-share" onclick="event.stopPropagation(); sharePost('${post.id}')" title="링크 복사">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>
+      </button>
       <div class="card-top">
         <span class="category-badge cat-${post.category}">${post.category}</span>
         <span class="card-date">${post.date}</span>
@@ -906,7 +976,14 @@ function renderPosts() {
 // ── Modal ─────────────────────────────────────────────────────────────────────
 function openModal(idx) {
   const p = BLOG_DATA.posts[idx];
+  history.replaceState(null, '', '#' + p.id);
   document.getElementById('modalInner').innerHTML = `
+    <button class="modal-share" onclick="sharePost('${p.id}')" title="링크 복사">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+      </svg>
+    </button>
     <span class="modal-badge cat-${p.category}">${p.category}</span>
     <h2 class="modal-title">${p.title}</h2>
     <div class="modal-meta">
@@ -922,8 +999,22 @@ function openModal(idx) {
 }
 
 function closeModal() {
+  history.replaceState(null, '', location.pathname);
   document.getElementById('overlay').classList.remove('open');
   document.body.style.overflow = '';
+}
+
+// ── Share ─────────────────────────────────────────────────────────────────────
+function sharePost(id) {
+  const url = location.origin + location.pathname + '#' + id;
+  navigator.clipboard.writeText(url).then(() => showToast('링크가 복사됐습니다 ✓'));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
 }
 
 document.getElementById('overlay').addEventListener('click', e => {
@@ -934,7 +1025,17 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModal();
 });
 
+// ── Hash routing (직접 링크로 접근 시) ─────────────────────────────────────────
+function checkHash() {
+  const hash = location.hash.slice(1);
+  if (hash) {
+    const idx = BLOG_DATA.posts.findIndex(p => p.id === hash);
+    if (idx !== -1) openModal(idx);
+  }
+}
+
 init();
+checkHash();
 </script>
 </body>
 </html>
