@@ -896,7 +896,24 @@ const CATEGORIES = ['전체', '프로젝트소개', '삽질기', '해결기', '�
 let activeFilter = '전체';
 
 // ── Render ────────────────────────────────────────────────────────────────────
-function init() {
+async function init() {
+  try {
+    const res = await fetch('https://api.github.com/repos/euuezone/document-master-template/contents/');
+    const files = await res.json();
+    const htmlFiles = files.filter(f => f.name.endsWith('.html') && /_v(\d+)\.html$/.test(f.name));
+    if (htmlFiles.length > 0) {
+      htmlFiles.sort((a, b) => {
+        const vA = parseInt(a.name.match(/_v(\d+)\.html$/)[1]);
+        const vB = parseInt(b.name.match(/_v(\d+)\.html$/)[1]);
+        return vB - vA;
+      });
+      const latest = htmlFiles[0];
+      const ver = 'v' + latest.name.match(/_v(\d+)\.html$/)[1];
+      const url = `https://euuezone.github.io/document-master-template/${latest.name}`;
+      const proj = PROJECTS.find(p => p.name === '문서 마스터 템플릿');
+      if (proj) { proj.version = ver; proj.url = url; }
+    }
+  } catch (e) {}
   renderProjects();
   renderFilters();
   renderPosts();
