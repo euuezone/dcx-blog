@@ -897,23 +897,27 @@ let activeFilter = '전체';
 
 // ── Render ────────────────────────────────────────────────────────────────────
 async function init() {
-  try {
-    const res = await fetch('https://api.github.com/repos/euuezone/document-master-template/contents/');
-    const files = await res.json();
-    const htmlFiles = files.filter(f => f.name.endsWith('.html') && /_v(\d+)\.html$/.test(f.name));
-    if (htmlFiles.length > 0) {
-      htmlFiles.sort((a, b) => {
-        const vA = parseInt(a.name.match(/_v(\d+)\.html$/)[1]);
-        const vB = parseInt(b.name.match(/_v(\d+)\.html$/)[1]);
-        return vB - vA;
-      });
-      const latest = htmlFiles[0];
-      const ver = 'v' + latest.name.match(/_v(\d+)\.html$/)[1];
-      const url = `https://euuezone.github.io/document-master-template/${latest.name}`;
-      const proj = PROJECTS.find(p => p.name === '문서 마스터 템플릿');
-      if (proj) { proj.version = ver; proj.url = url; }
-    }
-  } catch (e) {}
+  const checks = [
+    { name: '문서 마스터 템플릿',  repo: 'euuezone/document-master-template',   path: '',              pattern: /_v(\d+)\.html$/,              base: 'https://euuezone.github.io/document-master-template/' },
+    { name: 'UX라이팅 플러그인',   repo: 'euuezone/shinhan-uxwriting-plugin',   path: '01_사용가이드',  pattern: /plugin-guide_v(\d+)\.html$/,  base: 'https://euuezone.github.io/shinhan-uxwriting-plugin/01_사용가이드/' },
+    { name: 'QA AI 도우미',        repo: 'euuezone/qa-ai-figma-plugin',         path: '',              pattern: /ui_v(\d+)\.html$/,            base: null },
+    { name: 'Korean Design MD',    repo: 'euuezone/korean-design-md',           path: '',              pattern: /Korean_Design_MD_v(\d+)\.html$/, base: 'https://euuezone.github.io/korean-design-md/' },
+    { name: 'AI 디자인 프롬프트',  repo: 'euuezone/ai-design-prompt',           path: '',              pattern: /prompt-manager_v(\d+)\.html$/, base: 'https://euuezone.github.io/ai-design-prompt/' },
+  ];
+  await Promise.all(checks.map(async ({ name, repo, path, pattern, base }) => {
+    try {
+      const apiUrl = `https://api.github.com/repos/${repo}/contents/${path ? encodeURIComponent(path) : ''}`;
+      const files = await (await fetch(apiUrl)).json();
+      const matched = files.filter(f => f.name.endsWith('.html') && pattern.test(f.name));
+      if (!matched.length) return;
+      matched.sort((a, b) => parseInt(b.name.match(pattern)[1]) - parseInt(a.name.match(pattern)[1]));
+      const latest = matched[0];
+      const proj = PROJECTS.find(p => p.name === name);
+      if (!proj) return;
+      proj.version = 'v' + latest.name.match(pattern)[1];
+      if (base) proj.url = base + latest.name;
+    } catch (e) {}
+  }));
   renderProjects();
   renderFilters();
   renderPosts();
