@@ -659,16 +659,57 @@ body {
   <!-- 04 문서 예시 -->
   <div class="section" id="example">
     <div class="section-label">04</div>
-    <div class="section-title">문서 예시</div>
-    <div style="
-      background: var(--surface); border: 1px solid var(--border);
-      padding: 48px 24px; text-align: center;
-      display: flex; flex-direction: column; align-items: center; gap: 14px;
-    ">
-      <span class="badge badge-wait" style="font-size:10px; letter-spacing:0.1em;">TBD</span>
-      <div style="font-size:15px; font-weight:700; color:var(--text-1); letter-spacing:-0.01em;">개발 예정</div>
-      <div style="font-size:13px; color:var(--text-2); line-height:1.7; max-width:360px;">
-        리서치 마인드맵으로 생성된 실제 문서를<br />이 자리에서 바로 확인할 수 있게 될 예정이에요.
+    <div class="section-title">문서 예시 <span class="badge badge-wait" style="font-size:10px; letter-spacing:0.1em; vertical-align:middle; margin-left:8px;">개발 예정</span></div>
+    <div style="margin-top:16px;">
+      <table class="slide-table">
+        <thead>
+          <tr>
+            <th>슬라이드</th>
+            <th>내용</th>
+            <th>생성 방식</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>표지</td>
+            <td>문서 제목 · 문서 유형(보고서/제안서) · 날짜 · 작성자</td>
+            <td>자동</td>
+          </tr>
+          <tr>
+            <td>목차 슬라이드</td>
+            <td>확정된 목차 항목 전체 목록</td>
+            <td>자동</td>
+          </tr>
+          <tr>
+            <td>섹션별 슬라이드</td>
+            <td>각 목차 항목 = 1개 이상의 슬라이드. 선택 카드 내용 기반 AI 작성</td>
+            <td><span class="badge badge-new">AI</span></td>
+          </tr>
+          <tr>
+            <td>출처 목록</td>
+            <td>사용된 웹 검색 카드 및 내 자료 출처 자동 정리</td>
+            <td>자동</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="two-col" style="margin-top:16px;">
+      <div class="block">
+        <div class="block-title">인라인 편집</div>
+        <div class="block-rows">
+          <div class="block-row"><span class="dash">—</span>텍스트 클릭 → contenteditable로 바로 수정</div>
+          <div class="block-row"><span class="dash">—</span>이미지 클릭 → 파일 업로드 또는 URL 교체</div>
+          <div class="block-row"><span class="dash">—</span>슬라이드별 AI 원본으로 초기화 버튼</div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-title">다운로드</div>
+        <div class="block-rows">
+          <div class="block-row"><span class="dash">—</span>HTML 슬라이드 → PNG 캡처 (html2canvas)</div>
+          <div class="block-row"><span class="dash">—</span>PDF — jsPDF로 병합</div>
+          <div class="block-row"><span class="dash">—</span>PPTX — pptxgenjs 이미지 슬라이드</div>
+          <div class="block-row"><span class="dash">—</span>HTML·PDF·PPTX 완전 동일 비주얼 보장</div>
+        </div>
       </div>
     </div>
   </div>
