@@ -545,6 +545,8 @@ body {
 #btnUndo { display: none; }
 body.edit-mode #btnUndo { display: flex; }
 body.edit-mode #btnUndo:disabled { opacity: 0.35; cursor: not-allowed; }
+#btnDownload { display: none; }
+#btnDownload.has-edits { display: flex; }
 body.edit-mode [contenteditable="true"] {
   outline: 1.5px dashed var(--accent-line);
   border-radius: 2px;
@@ -939,6 +941,10 @@ body.edit-mode .img-edit-wrap:hover::after { opacity: 1; }
     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.5A3.5 3.5 0 1 1 5.5 9"/><polyline points="2 3 2 5.5 4.5 5.5"/></svg>
     <span>되돌리기</span>
   </button>
+  <button class="export-btn" id="btnDownload" onclick="downloadHTML()">
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1v5.5M3 5l2 2 2-2M1 9h8"/></svg>
+    <span>저장</span>
+  </button>
   <button class="export-btn" id="btnFS" onclick="toggleFullscreen()">
     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3.5V1h2.5M6.5 1H9v2.5M9 6.5V9H6.5M3.5 9H1V6.5"/></svg>
     <span id="fsText">전체화면</span>
@@ -1298,7 +1304,7 @@ body.edit-mode .img-edit-wrap:hover::after { opacity: 1; }
     <!-- Left: Horizontal bar chart -->
     <div style="flex:1;">
       
-    <p style="margin: 0; font-size: 26px; font-family: Pretendard, 'Apple SD Gothic Neo', sans-serif; position: absolute; left: 119px; top: 18px; color: #000000"><span style="color: rgb(55, 65, 81); font-weight: 700;">국내 투자정보 시장 세그먼트별 규모 (2025E, 억원)</span><svg viewBox="0 0 800 480" style="width:100%;max-height: 650px; position: relative; margin-top: 20px; margin-right: 20px; margin-bottom: 20px; margin-left: 20px; font-size: 16px; width: 100%" font-family="'Pretendard','Apple SD Gothic Neo',sans-serif">
+    <p style="margin: 0; font-size: 26px; font-family: Pretendard, 'Apple SD Gothic Neo', sans-serif; position: absolute; left: 119px; top: 18px; color: #000000"><span style="color: rgb(55, 65, 81); font-weight: 700;">글로벌 디지털 콘텐츠 구독 시장 규모 (2025E, $B)</span><svg viewBox="0 0 800 480" style="width:100%;max-height: 650px; position: relative; margin-top: 20px; margin-right: 20px; margin-bottom: 20px; margin-left: 20px; font-size: 16px; width: 100%" font-family="'Pretendard','Apple SD Gothic Neo',sans-serif">
         <!-- Category rows — 더 크게, 간격 넓힘 -->
         <!-- 1: 비디오 스트리밍 $280B -->
         <text x="198" y="62" text-anchor="end" font-size="17" fill="#374151" font-weight="600">비디오 스트리밍</text>
@@ -2347,7 +2353,7 @@ body.edit-mode .img-edit-wrap:hover::after { opacity: 1; }
       <div style="width: 150px; font-size: 22px; color: #374151; font-weight: 600">$419</div>
       <div style="flex: 1; font-size: 22px; color: #64748B">펀드·ETF 투자자</div>
       <div style="flex: 1.5; font-size: 22px; color: #64748B">펀드 평가, X-Ray 분석</div>
-      <div style="flex: 1; font-size: 22px; color: #374151" 600;"="">400만 명</div>
+      <div style="flex: 1; font-size: 22px; color: #374151; font-weight: 600">400만 명</div>
       <div style="flex: 1; font-size: 22px; color: #1C2B4A; font-weight: 600">Star Rating 브랜드</div>
     </div>
     <div style="display: flex; background: #FFFFFF; padding: 14px 16px; gap: 0; align-items: center; padding-top: 28px; padding-bottom: 28px">
@@ -3262,12 +3268,48 @@ body.edit-mode .img-edit-wrap:hover::after { opacity: 1; }
   window.addEventListener('load', async () => {
     const loader = document.getElementById('loader');
     await document.fonts.ready;
+    lsRestore();
     fitContentBox();
     loader.classList.add('out');
     setTimeout(() => loader.remove(), 500);
   });
 
   // ── Edit Mode ──────────────────────────────────────────────
+  const LS_KEY = 'trendrpt_v3_edits';
+
+  function lsSave(el) {
+    const all = document.querySelectorAll(EDITABLE_SEL);
+    const idx = Array.from(all).indexOf(el);
+    if (idx === -1) return;
+    const saved = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+    saved[idx] = el.innerHTML;
+    localStorage.setItem(LS_KEY, JSON.stringify(saved));
+    document.getElementById('btnDownload').classList.add('has-edits');
+  }
+
+  function lsRestore() {
+    const saved = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+    if (!Object.keys(saved).length) return;
+    const all = document.querySelectorAll(EDITABLE_SEL);
+    Object.entries(saved).forEach(([idx, html]) => {
+      const el = all[parseInt(idx)];
+      if (el) el.innerHTML = html;
+    });
+    document.getElementById('btnDownload').classList.add('has-edits');
+  }
+
+  function downloadHTML() {
+    const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '투자정보구독서비스_트렌드리포트_v3_edited.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  }
+
   let editMode = false;
   let imgTarget = null;
   let undoStack = [];
@@ -3281,6 +3323,7 @@ body.edit-mode .img-edit-wrap:hover::after { opacity: 1; }
       const el = this, saved = this._undoFocusHTML;
       undoStack.push(() => { el.innerHTML = saved; });
       _undoBtnSync();
+      lsSave(el);
     }
   }
   function undoEdit() {
