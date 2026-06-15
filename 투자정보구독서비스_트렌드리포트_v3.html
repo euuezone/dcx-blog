@@ -516,15 +516,6 @@ body {
 .export-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 :fullscreen .export-bar, :-webkit-full-screen .export-bar { display: none; }
 
-/* 전체화면: 슬라이드가 뷰포트 전체를 채움 */
-:fullscreen .deck, :-webkit-full-screen .deck {
-  position: fixed !important; top: 0 !important; left: 0 !important;
-  width: 100vw !important; height: 100vh !important;
-  transform: none !important;
-}
-:fullscreen .deck-content, :-webkit-full-screen .deck-content {
-  width: 100% !important; height: 100% !important; transform: none !important;
-}
 /* 전체화면: 왼쪽 TOC 메뉴 숨김, 콘텐츠 전체 너비 */
 :fullscreen .persistent-toc, :-webkit-full-screen .persistent-toc {
   display: none !important;
@@ -3783,7 +3774,8 @@ body.edit-mode .img-edit-wrap:hover::after { opacity: 1; }
   }
 
   document.addEventListener('fullscreenchange', () => {
-    resizeDeck();
+    // 전체화면 진입 후 브라우저가 치수를 확정한 뒤 스케일 재계산
+    requestAnimationFrame(() => { resizeDeck(); fitContentBox(); });
     const t = document.getElementById('fsText');
     if (t) t.textContent = document.fullscreenElement ? '전체화면 종료' : '전체화면';
   });
