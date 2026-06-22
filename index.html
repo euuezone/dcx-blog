@@ -904,6 +904,36 @@ const BLOG_DATA = {
       "project": "리서치_마인드맵",
       "summary": "오늘은 리서치 마인드맵 v2 PRD를 전면 재검토하고 v3으로 방향을 새로 잡았다. 단순 탐색 도구에서 문서 작성 전 과정을 커버하는 5단계 플로우로 바뀌었다. PRD 문서를 블로그에 배포하고 관제탑도 업데이트했다.",
       "content": "<h2>오늘 한 것</h2><p>리서치 마인드맵 v2 PRD를 다시 꺼내서 방향을 재검토했다. 얘기를 나누다 보니 기존 v2 기획에서 빠진 게 있었다. 문서를 만들기 전에 '이게 보고서인지 제안서인지', '누가 읽는 문서인지', '어떤 내용을 담을지'를 먼저 정해야 한다는 것. 그 과정이 없으면 마인드맵 탐색 자체가 방향 없이 흘러간다.</p><p>그래서 v3로 버전을 올리고 전체 흐름을 5단계로 다시 짰다.</p><h2>v3에서 달라진 핵심 두 가지</h2><p><strong>1. 탐색 전에 기획 단계 추가</strong><br>문서 유형 선택(보고서/제안서) → 채팅 또는 자료 업로드로 PRD 확정 → 목차 생성 및 편집. 이 세 단계를 마친 뒤에야 마인드맵 탐색으로 넘어간다. 순서가 생기니까 탐색할 때 각 섹션이 무엇을 위한 내용인지 명확해진다.</p><p><strong>2. 내 자료 올리기</strong><br>마인드맵 화면에서 내가 가진 PDF·Word·이미지를 올리면 AI가 분석해서 카드 노드로 만들어준다. 웹 검색 결과와 내 자료를 같은 화면에서 함께 볼 수 있다. 섹션마다 따로 올릴 수 있어서 섹션별로 관련 자료를 모아두는 방식으로 쓸 수 있다.</p><h2>PRD 문서 배포</h2><p>v3 PRD를 HTML로 정리해서 블로그에 함께 배포했다. 문서를 만들 때마다 PRD도 같이 올려두면 나중에 '왜 이렇게 만들었지?'를 확인할 때 찾기 편하다.</p><p><a href='https://euuezone.github.io/dcx-blog/PRD_리서치마인드맵_v2_v3.html' target='_blank'>→ 리서치 마인드맵 v3 PRD 보기</a></p><h2>다음 할 것</h2><ul><li>Phase 1 개발 시작 — 온보딩 안내 모달 + 보고서/제안서 선택 화면</li></ul><div class='callout'>기획이 탄탄하면 개발할 때 결정을 덜 해도 된다. v3 PRD가 그 역할을 해줄 것 같다.</div>"
+    },
+    {
+      "id": "2026-06-12_shinhan-q2-research",
+      "title": "HTML 보고서에서 PPT 바로 내보내기 — pptxgenjs로 직접 구현했다",
+      "date": "2026-06-12",
+      "category": "작업일지",
+      "tags": ["신한투자증권", "HTML", "PPT", "pptxgenjs", "보고서"],
+      "project": "신한_2분기_리서치",
+      "summary": "신한투자증권 2분기 리서치 HTML 보고서를 완성하고, 스크린샷 없이 PPT로 내보내는 기능을 구현했다. pptxgenjs로 DOM을 직접 읽어서 표와 텍스트가 편집 가능한 상태로 나온다.",
+      "content": "<h2>이 보고서가 뭔지부터</h2><p>신한투자증권 차세대 프로젝트 맥락에서 2분기 UX 리서치 결과를 정리한 HTML 보고서다. 커버, 목차, 섹션별 분석 내용으로 구성되고, CSS <code>scale()</code>로 1920×1080 슬라이드처럼 보인다.</p><p>원래는 PowerPoint로 만들었는데, HTML로 전환하면 수정이 빠르고 링크 하나로 공유할 수 있어서 바꿨다. 이번 v3에서 PPT 내보내기 기능을 추가했다.</p><h2>PPT 내보내기를 어떻게 구현했나</h2><p>보통 HTML을 PPT로 변환하면 스크린샷(이미지)을 슬라이드에 붙이는 방식을 쓴다. 결과물이 이미지라서 PPT를 받아도 글자를 편집할 수 없다.</p><p>이번에는 pptxgenjs 라이브러리로 DOM을 직접 읽어서 PPT를 만들었다. HTML의 텍스트, 표, 이미지를 pptxgenjs 요소로 변환해서 넣는 방식이다. 결과물이 진짜 PPT 요소로 구성되어 글자와 표를 편집할 수 있다.</p><h2>비율 변환이 핵심이었다</h2><p>HTML에서 쓰는 px 단위를 PPT의 인치 단위로 정확하게 변환해야 레이아웃이 어긋나지 않는다. 1920px 기준으로 <code>_SC = 0.007292인치/px</code>, 폰트는 <code>_PT = 0.525pt/px</code>로 환산했다. 이 비율로 HTML에 보이는 것과 PPT에 나오는 것이 거의 일치한다.</p><h2>레이아웃 구현</h2><p>슬라이드 배경은 회색 패널(#EEF0F3)에 흰색 콘텐츠 박스와 테두리를 얹는 구조다. 슬라이드 종류는 세 가지로 나뉜다.</p><ul><li>커버 슬라이드 — 파란 배경, 제목·부제목·날짜</li><li>섹션 구분 슬라이드 — 섹션 번호와 제목만</li><li>콘텐츠 슬라이드 — 본문 텍스트, 표, 이미지</li></ul><p>표는 pptxgenjs 네이티브 테이블로 변환해서 셀 배경색과 테두리까지 살아있다. 이미지는 data URI 형태로 슬라이드에 직접 삽입했다.</p><p><a href='https://euuezone.github.io/dcx-blog/신한투자증권_2분기리서치_v3.html' target='_blank'>→ 2분기 리서치 보고서 보기</a></p><div class='callout'>HTML로 만들면 스크린샷 없이 PPT도 같이 만들어진다. 내용이 바뀌면 코드 한 줄 고치고 PPT를 다시 내보내면 된다.</div>"
+    },
+    {
+      "id": "2026-06-17_trend-report-v4-update",
+      "title": "트렌드 리포트 대규모 업데이트 — 벤치마킹 전면 교체 + 링크 48개 + 렌더링 버그 수정",
+      "date": "2026-06-17",
+      "category": "작업일지",
+      "tags": ["트렌드리포트", "업데이트", "html2canvas", "버그수정", "배포"],
+      "project": "투자정보구독서비스_트렌드리포트",
+      "summary": "삼성증권 POP 벤치마킹을 KB PRIME Club으로 전면 교체하고, URL 링크 48개를 추가했다. PDF 출력 시 슬라이드 오른쪽이 잘리던 scale 버그와 html2canvas 렌더링 오류도 잡았다.",
+      "content": "<h2>뭘 바꿨나</h2><p>투자정보구독서비스 트렌드 리포트(35슬라이드 + Appendix)를 v9부터 v12까지 연속으로 업데이트했다. 크게 세 가지 작업이었다.</p><h2>1. 벤치마킹 섹션 전면 교체</h2><p>기존에 삼성증권 POP을 벤치마킹 사례로 썼는데 KB PRIME Club으로 바꾸게 됐다. 단순히 이름만 교체한 게 아니라 해당 서비스의 내용 전체가 달라졌다.</p><ul><li>s18 — 서비스 개요 표 교체</li><li>s22 — 케이스스터디 섹션 교체</li><li>s30 — 비교 차트 교체 (연합인포맥스 opacity 제거 포함)</li><li>Appendix — 참고자료 항목 교체</li></ul><p>목차 go() 링크가 슬라이드 ID를 직접 참조하는 구조라서, 교체 후 슬라이드 번호가 바뀐 항목들의 링크를 전부 다시 맞췄다.</p><h2>2. URL 링크 48개 추가</h2><p>10p 대표사례, 19~29p 서비스명, Appendix 참고자료에 외부 링크를 달았다. 총 48개다. 링크가 없으면 발표 때 청중이 서비스를 직접 확인하기 어렵다는 피드백이 있어서 추가했다.</p><p>Pretendard로 폰트를 통일하는 작업도 함께 했다. Google Fonts를 제거하고 Pretendard CDN 하나로 정리했다. 폰트 로딩 완료를 기다리는 500ms 타임아웃도 추가해서 깜빡임을 없앴다.</p><h2>3. 렌더링 버그 두 가지</h2><p><strong>PDF 출력 시 슬라이드 오른쪽이 잘리는 문제</strong><br>split 레이아웃(좌우 2단 구성) 슬라이드가 PDF와 전체화면 모드에서 오른쪽이 잘렸다. CSS <code>scale()</code>의 기준값 문제였다. 0.6099에서 0.7141로 올리고 JS에서 인라인으로 수정했더니 해결됐다.</p><p><strong>html2canvas가 차트를 못 그리는 문제</strong><br>9p 차트가 PDF로 내보낼 때 비어있게 나왔다. <code>position: absolute</code>로 배치된 요소를 html2canvas가 제대로 캡처하지 못하는 경우가 있다. absolute를 제거하고 정상 문서 흐름으로 바꿨더니 캡처가 정상으로 됐다.</p><p>22p footer 이미지 높이도 28px에서 18px로 통일하는 작업이 있었다.</p><p><a href='https://euuezone.github.io/dcx-blog/투자정보구독서비스_트렌드리포트_v4.html' target='_blank'>→ 트렌드 리포트 보기</a></p><div class='callout'>PDF 출력에서 잘리는 문제는 scale 기준값을 틀리게 잡아서 생긴 거였다. html2canvas는 position: absolute 요소를 조심해야 한다는 걸 이번에 확실히 알았다.</div>"
+    },
+    {
+      "id": "2026-06-18_megaflow-service-update",
+      "title": "megaflow 서비스 소개 페이지 업데이트 — 현재 상황 · 진행 예정 표 추가",
+      "date": "2026-06-18",
+      "category": "작업일지",
+      "tags": ["megaflow", "서비스소개", "업데이트", "리서치마인드맵"],
+      "project": "리서치_마인드맵",
+      "summary": "megaflow 서비스 소개 페이지에 현재 개발 상황과 앞으로 진행할 내용을 정리한 표를 추가했다. Step별로 완료된 기능과 예정 항목을 한눈에 볼 수 있게 됐다.",
+      "content": "<h2>뭘 추가했나</h2><p>megaflow 서비스 소개 페이지(02 서비스 흐름 섹션)에 현재 상황 · 진행 예정 두 칸짜리 표를 추가했다. 서비스가 어디까지 만들어졌는지, 앞으로 뭘 할 건지를 한 화면에서 볼 수 있게 됐다.</p><h2>현재 상황 표</h2><p>1~4단계 기본 구현이 완료된 상태다. Step별로 완료된 기능을 명시했다.</p><ul><li>Step 1 — 문서 유형 선택 화면 완료</li><li>Step 2 — PRD 자동 분석 및 확정 완료</li><li>Step 3 — AI 목차 생성 및 드래그 편집 완료</li><li>Step 4 — 섹션별 마인드맵 탐색 완료</li></ul><h2>진행 예정 표</h2><p>맥락 중심 고도화 방향으로 각 Step에 예정된 작업을 정리했다. PRD 입력 방식을 텍스트에서 문서 업로드 자동분석으로 고도화하는 내용이 핵심이다.</p><h2>그 외 변경</h2><p>전체 폰트 크기를 20% 확대했다. 소개 페이지를 넓은 화면에서 볼 때 글씨가 작다는 피드백을 반영했다. 문서 예시 iframe의 src를 로컬 경로에서 GitHub Pages URL로 바꿔서 공유된 링크에서도 미리보기가 정상으로 나오게 했다.</p><p><a href='https://euuezone.github.io/dcx-blog/megaflow.html' target='_blank'>→ megaflow 서비스 소개 보기</a></p><div class='callout'>서비스 소개 페이지는 외부에 공유하는 문서다. 현재 상황을 명시해두면 '이거 언제 써요?'라는 질문에 페이지 하나로 답할 수 있다.</div>"
     }
   ]
 };
@@ -918,7 +948,7 @@ const PROJECTS = [
   { name: '문서 마스터 템플릿', version: 'v14', url: 'https://euuezone.github.io/document-master-template/', desc: 'AI Native SDLC 도입 제안을 위해 만든 기획 문서 HTML 템플릿' },
   { name: 'Korean Design MD', version: 'v1', url: 'https://euuezone.github.io/korean-design-md/', desc: '국내 73개 서비스의 디자인 패턴과 인터랙션 레퍼런스를 정리한 문서' },
   { name: 'AI 디자인 프롬프트', version: 'v1', url: 'https://euuezone.github.io/ai-design-prompt/', desc: 'AI 이미지 생성에 쓰는 프롬프트를 카테고리별로 관리하는 도구' },
-  { name: '리서치 마인드맵', version: 'v1', url: 'https://research-mindmap.vercel.app', desc: '주제를 입력하면 AI가 웹을 검색하고 탐구 가지를 만들어주는 마인드맵. 클릭할수록 계속 확장된다' },
+  { name: 'megaflow', version: 'v3', url: 'https://research-mindmap.vercel.app', desc: '문서 유형 선택 → PRD → 목차 편집 → 섹션별 마인드맵 → 최종 문서까지 5단계로 이어지는 리서치&문서 자동 생성 서비스' },
 ];
 
 // ── State ─────────────────────────────────────────────────────────────────────
