@@ -971,8 +971,8 @@ body.edit-mode .img-edit-wrap:hover::after { opacity: 1; }
   <div style="position:absolute;right:240px;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent 0%,#93C5FD 40%,#93C5FD 60%,transparent 100%);opacity:0.15;pointer-events:none;"></div>
 
   <div>
-    <div style="font-size:13px;font-weight:600;color:#93C5FD;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:56px;">신한투자증권 2분기 트렌드 리포트</div>
-    <div style="font-size:72px;font-weight:700;color:#FFFFFF;line-height:1.12;letter-spacing:-0.025em;margin-bottom:36px;max-width:1100px;">신한투자증권 디지털 플랫폼 운영<div>투자 정보 구독 서비스 - 트렌드 리포트</div></div>
+    <div style="font-size:13px;font-weight:600;color:#93C5FD;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:56px;">투자증권 2분기 트렌드 리포트</div>
+    <div style="font-size:72px;font-weight:700;color:#FFFFFF;line-height:1.12;letter-spacing:-0.025em;margin-bottom:36px;max-width:1100px;">투자증권 디지털 플랫폼 운영<div>투자 정보 구독 서비스 - 트렌드 리포트</div></div>
     <div style="font-size:26px;font-weight:400;color:#93C5FD;line-height:1.55;max-width:820px;margin-bottom:64px;">글로벌·국내 구독 서비스 트렌드와 투자 정보 콘텐츠 현황</div>
     <div style="width:72px;height:4px;background:#2563EB;"></div>
   </div>
@@ -980,7 +980,7 @@ body.edit-mode .img-edit-wrap:hover::after { opacity: 1; }
   <div style="display:flex;gap:0;align-items:stretch;border-top:1px solid rgba(255,255,255,0.12);padding-top:40px;">
     <div style="padding-right:48px;margin-right:48px;border-right:1px solid rgba(255,255,255,0.12);">
       <div style="font-size:12px;font-weight:600;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">PROJECT.</div>
-      <div style="font-size:18px;font-weight:500;color:#E2E8F0;">신한투자증권</div>
+      <div style="font-size:18px;font-weight:500;color:#E2E8F0;">투자증권</div>
     </div>
     <div style="padding-right:48px;margin-right:48px;border-right:1px solid rgba(255,255,255,0.12);">
       <div style="font-size:12px;font-weight:600;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">DATE.</div>
@@ -3475,7 +3475,7 @@ body.edit-mode .img-edit-wrap:hover::after { opacity: 1; }
         if (i) doc.addPage();
         doc.addImage(c.toDataURL('image/jpeg', .92), 'JPEG', 0, 0, 960, 540);
       });
-      doc.save('신한투자증권_2분기리서치.pdf');
+      doc.save('2분기리서치.pdf');
     } catch(e) {
       console.error(e);
       alert('PDF 생성 중 오류가 발생했습니다.');
@@ -3509,7 +3509,7 @@ body.edit-mode .img-edit-wrap:hover::after { opacity: 1; }
     sl.background = { color: '001870' };
 
     // .logo-area: top:26px, left:36px (CSS)
-    sl.addText('신한 2분기 리서치', {
+    sl.addText('2분기 리서치', {
       x: 36*_SC, y: 26*_SC, w: 2.5, h: 18*_SC,
       fontSize: 10*_PT, color: '0052FF', fontFace: 'Courier New', bold: true
     });
@@ -3603,7 +3603,7 @@ body.edit-mode .img-edit-wrap:hover::after { opacity: 1; }
       fill: { color: 'FFFFFF' }, line: { color: 'DEE1E6', width: 0.75 }
     });
     // .logo-area (top:26px, left:36px CSS)
-    sl.addText('신한 2분기 리서치', {
+    sl.addText('2분기 리서치', {
       x: 36*_SC, y: 26*_SC, w: 2.5, h: 18*_SC,
       fontSize: 10*_PT, color: '0052FF', fontFace: 'Courier New', bold: true
     });
@@ -3746,7 +3746,7 @@ body.edit-mode .img-edit-wrap:hover::after { opacity: 1; }
       const pptx = new PptxGenJS();
       pptx.layout = 'LAYOUT_16x9';
       pptx.author = 'DCX';
-      pptx.title  = '신한투자증권 2분기 리서치';
+      pptx.title  = '투자증권 2분기 리서치';
 
       for (let i = 1; i <= TOTAL; i++) {
         const el = document.getElementById('s' + i);
@@ -3756,7 +3756,7 @@ body.edit-mode .img-edit-wrap:hover::after { opacity: 1; }
         else                                      _pptContent(sl, el);
       }
 
-      await pptx.writeFile({ fileName: '신한투자증권_2분기리서치.pptx' });
+      await pptx.writeFile({ fileName: '2분기리서치.pptx' });
     } catch(e) {
       console.error(e);
       alert('PPT 생성 중 오류가 발생했습니다: ' + e.message);
