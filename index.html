@@ -1006,6 +1006,26 @@ const BLOG_DATA = {
       "project": "트렌드_리포트",
       "summary": "투자정보구독서비스 트렌드 리포트를 고객사에 전달했는데 링크가 깨져 있었다. 블로그를 AWS로 이전하면서 GitHub Pages가 꺼진 것이 원인이었다.",
       "content": "<h2>무슨 일이었나</h2><p>투자정보구독서비스 트렌드 리포트를 고객사에 전달했다. 전달하고 나서 링크를 다시 확인해보니 404 오류가 났다. 고객사에서 클릭했을 때도 같은 화면이 떴을 것이다.</p><h2>왜 깨졌나</h2><p>원인을 찾는 데 오래 걸리지 않았다. 얼마 전에 블로그를 GitHub Pages에서 AWS S3 + CloudFront로 이전하면서 GitHub Pages 설정이 함께 꺼진 것이었다.</p><p>블로그 자체는 새 주소(CloudFront URL)로 잘 올라가 있었다. 그런데 트렌드 리포트는 GitHub Pages 주소로 이미 외부에 공유해둔 상태였다. 블로그 이전 작업을 하면서 이 링크가 함께 죽을 수 있다는 걸 미처 확인하지 못했다.</p><h2>어떻게 고쳤나</h2><p>GitHub API로 Pages 설정을 확인했더니 비활성화 상태였다. main 브랜치 기준으로 Pages를 다시 활성화했다. 빌드가 완료되는 데 1분 정도 걸렸고, 이후 링크에서 200 응답이 돌아왔다.</p><p>파일 자체는 GitHub 저장소에 그대로 있었다. v12 내용이 v4.html 이름으로 올라가 있어서 따로 파일을 다시 올릴 필요는 없었다.</p><h2>앞으로 확인해야 할 것</h2><p>배포 환경을 바꿀 때는 기존에 외부로 나간 링크가 있는지 먼저 확인해야 한다. 내부에서만 쓰는 링크는 새 주소로 바꾸면 되지만, 고객사에 이미 전달한 링크는 URL이 바뀌면 다시 안내해야 하는 번거로움이 생긴다.</p><a href='https://euuezone.github.io/dcx-blog/투자정보구독서비스_트렌드리포트_v4.html' target='_blank'>→ 트렌드 리포트 보기</a><div class='callout'>외부에 공유한 링크는 배포 환경이 바뀌어도 살아있어야 한다. 이전 작업 전에 나간 링크 목록을 먼저 확인하는 습관이 필요하다.</div>"
+    },
+    {
+      "id": "2026-07-08_aws-cloudfront-migration",
+      "title": "블로그를 GitHub Pages에서 AWS S3 + CloudFront로 옮겼다",
+      "date": "2026-07-08",
+      "category": "작업일지",
+      "tags": ["AWS", "S3", "CloudFront", "블로그이전", "HTTPS"],
+      "project": "DCX_블로그",
+      "summary": "GitHub Pages로 운영하던 블로그를 AWS S3 + CloudFront로 이전했다. HTTPS 자동 적용, 서울 리전 캐싱, GitHub 저장소 접근 제어까지 한꺼번에 해결됐다.",
+      "content": "<h2>왜 옮겼나</h2><p>블로그를 GitHub Pages로 운영하면서 불편한 점이 두 가지 있었다. 첫째, 저장소가 public이어야 GitHub Pages가 작동한다. 블로그에는 외부에 공개하기 애매한 파일들이 섞여 있어서 저장소 자체를 private으로 전환하고 싶었다. 둘째, CDN이 해외 서버 기준이라 국내에서 접속할 때 체감 속도가 느렸다.</p><p>AWS S3 + CloudFront 조합을 쓰면 두 문제가 동시에 해결된다. S3 버킷은 private으로 두고 CloudFront를 통해서만 접근하도록 설정하면, 저장소를 공개하지 않아도 웹에서 볼 수 있다. 서울 리전 엣지 서버를 통해 국내 사용자에게 빠르게 콘텐츠를 전달할 수 있다.</p><h2>이전 구조</h2><p>기존에는 GitHub 저장소에 HTML 파일을 올리면 euuezone.github.io/dcx-blog/ 주소로 자동 배포됐다. 구조가 단순해서 편했지만 저장소 공개 상태를 바꾸면 사이트 자체가 내려가는 구조였다.</p><h2>새 구조</h2><p>파일은 AWS S3 버킷(megazone-dcx)에 올린다. 버킷은 외부에서 직접 접근이 안 되는 private 상태다. CloudFront가 앞에서 요청을 받아서 S3에서 파일을 가져와 응답한다. HTTPS는 CloudFront가 자동으로 처리한다.</p><p>배포는 명령어 한 줄이다. <code>aws s3 sync</code>로 로컬 폴더를 S3에 동기화하고, <code>aws cloudfront create-invalidation</code>으로 캐시를 초기화한다. 캐시를 초기화하지 않으면 파일을 올려도 이전 버전이 계속 보인다.</p><h2>내부 링크 전체 교체</h2><p>블로그 안에서 다른 파일로 연결되는 링크가 여러 개 있었다. GitHub Pages 주소로 걸려있던 링크를 전부 CloudFront 주소로 교체했다. 특히 megaflow 서비스 소개 페이지, 2분기 리서치 보고서 embed URL 등이 포함됐다.</p><h2>GitHub 저장소는 유지했다</h2><p>S3로 이전했지만 GitHub 저장소는 그대로 두었다. 코드 버전 관리는 git으로 계속 하고, 배포만 S3로 바꾼 것이다. 저장소는 public에서 private으로 전환했다.</p><div class='callout'>GitHub Pages는 간단하게 시작하기 좋지만 저장소 공개 상태와 배포가 묶여있다. 파일 관리와 배포를 분리하고 싶다면 S3 + CloudFront 조합이 낫다.</div>"
+    },
+    {
+      "id": "2026-07-09_shinhan-sol-event-gmail",
+      "title": "이벤트 초대 메일을 Gmail API로 직접 발송하는 시스템을 만들었다",
+      "date": "2026-07-09",
+      "category": "작업일지",
+      "tags": ["GmailAPI", "GoogleAppsScript", "이벤트", "클릭추적", "HTML메일"],
+      "project": "신한_New슈퍼SOL",
+      "summary": "신한투자증권 New슈퍼SOL 앱 이벤트 화면을 만들고, Gmail API로 발송하는 메일 HTML과 클릭 추적 시스템까지 구축했다. 이벤트 기간은 7월~9월이다.",
+      "content": "<h2>무엇을 만들었나</h2><p>신한투자증권 New슈퍼SOL 앱 출시 이벤트 안내를 위해 세 가지를 만들었다. 이벤트 화면 HTML, 메일 발송용 HTML, 클릭 추적 시스템이다.</p><h2>이벤트 화면</h2><p>이벤트 내용을 담은 웹 페이지를 먼저 만들었다. 이벤트 참여 방법, 경품, 기간 안내가 들어간다. 이벤트 상세를 보여주는 모달 팝업도 포함했다. AWS S3에 올려서 CloudFront URL로 접근할 수 있게 배포했다.</p><p>가이드 페이지도 두 개 만들었다. 앱 사용 가이드(<code>guide-app.html</code>)와 계좌 개설 가이드(<code>guide-account.html</code>)다. 메일에서 버튼을 클릭하면 이 페이지로 연결된다.</p><h2>Gmail 호환 메일 HTML</h2><p>이벤트 화면을 그대로 메일로 보낼 수 없다. Gmail은 <code>&lt;style&gt;</code> 태그 안에 있는 CSS를 무시한다. class로 스타일을 지정해도 적용이 안 된다.</p><p>해결 방법은 모든 스타일을 태그 안에 직접 쓰는 것이다(<code>style="..."</code> 형태). 레이아웃 wrapper도 <code>&lt;main&gt;</code> 같은 시맨틱 태그 대신 <code>&lt;div&gt;</code>로 바꿨다. 이모지도 일부 메일 클라이언트에서 깨지는 경우가 있어서 별도로 확인했다.</p><p>모바일과 PC 양쪽에서 다르게 보이도록 반응형도 적용했다. PC에서는 주요 콘텐츠를 가로 3열로, 모바일에서는 세로로 쌓이게 했다. 메일에서 media query가 제대로 작동하는지도 테스트 발송으로 확인했다.</p><h2>클릭 추적 시스템</h2><p>메일 안 링크를 누가 언제 클릭했는지 기록하는 시스템을 Google Apps Script로 만들었다. 메일 버튼의 링크가 직접 목적지로 가지 않고, Apps Script 웹앱을 거쳐서 이동한다. 웹앱이 클릭 기록을 구글 시트에 저장한 뒤 원래 페이지로 리다이렉트한다.</p><p>수신자별로 담당 직원(hwno)이 다르게 배정된다. 4개 hwno에 가중치를 두어서(15%·20%·20%·45%) 랜덤하게 배정되도록 했다. 클릭 기록에는 수신자 정보와 hwno가 함께 저장된다.</p><p>웹 대시보드도 Apps Script로 만들었다. 사내 계정으로 로그인하면 클릭 현황을 한눈에 볼 수 있다.</p><h2>Gmail API 발송 스크립트</h2><p>메일 발송은 Python 스크립트로 처리한다. Gmail API를 써서 OAuth 인증 후 발송한다. 대용량 발송이 아니라 사내 대상이라 API 한도 걱정은 없다.</p><p>테스트 발송으로 실제 받은 편지함에서 레이아웃과 링크가 정상인지 확인했다. 전사 발송 전에 수신자 명단과 담당자 배정 정보를 최종 확인하는 단계가 남아있다.</p><div class='callout'>메일 HTML은 일반 웹 개발과 다르다. CSS가 거의 안 먹히고 태그 지원도 제각각이라, 테스트 발송을 여러 번 해보면서 확인하는 게 가장 확실하다.</div>"
     }
   ]
 };
